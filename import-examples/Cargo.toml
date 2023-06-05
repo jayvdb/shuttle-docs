@@ -1,0 +1,9 @@
+[package]
+name = "import-examples"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+glob = "*"
+slugify = "*"
+detect-lang = "*"
