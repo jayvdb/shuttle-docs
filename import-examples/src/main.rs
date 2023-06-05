@@ -1,16 +1,16 @@
 use std::io::Write;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 use slugify::slugify;
 
-fn rust_packages(examples_dir: &std::path::Path) -> Vec<std::path::PathBuf> {
+fn rust_packages(examples_dir: &Path) -> Vec<PathBuf> {
     let paths = glob::glob(examples_dir.join("**/Cargo.toml").to_str().unwrap())
         .expect("Unable to read directory");
     paths
         .map(|x| {
             let mut y = x.unwrap();
             y.pop();
-            std::path::PathBuf::from(y.strip_prefix(examples_dir).unwrap())
+            PathBuf::from(y.strip_prefix(examples_dir).unwrap())
         })
         .filter(|x| !x.starts_with("fullstack-templates"))
         .collect()
@@ -31,11 +31,11 @@ fn write_snippet(filename: &PathBuf, contents: String) {
 }
 
 fn create_snippets(
-    examples_dir: &std::path::Path,
-    example_package_path: std::path::PathBuf,
-    snippet_dir: &std::path::PathBuf,
+    examples_dir: &Path,
+    example_package_path: PathBuf,
+    snippet_dir: &Path,
 ) {
-    let mut example_dir = std::path::PathBuf::from(examples_dir);
+    let mut example_dir = PathBuf::from(examples_dir);
     example_dir.push(example_package_path.clone());
     let files =
         glob::glob(example_dir.join("**/*").to_str().unwrap()).expect("Unable to read directory");
@@ -45,7 +45,7 @@ fn create_snippets(
             ![".gitignore", ".ignore"]
                 .contains(&x.as_ref().unwrap().file_name().unwrap().to_str().unwrap())
         })
-        .map(|x| std::path::PathBuf::from(x.unwrap().strip_prefix(example_dir.clone()).unwrap()))
+        .map(|x| PathBuf::from(x.unwrap().strip_prefix(example_dir.clone()).unwrap()))
         .collect();
 
     for file_path in files {
@@ -71,7 +71,7 @@ fn create_snippets(
             file_path.display().to_string(),
         );
 
-        let mut snippet_filename = snippet_dir.clone();
+        let mut snippet_filename = snippet_dir.to_path_buf();
         snippet_filename.push(snippet_name);
         write_snippet(&snippet_filename, snippet);
     }
@@ -80,7 +80,7 @@ fn create_snippets(
 fn main() {
     let mut cli_args = std::env::args();
     let examples_dir = cli_args.nth(1).expect("Please provide path to examples");
-    let examples_dir = std::path::Path::new(&examples_dir);
+    let examples_dir = Path::new(&examples_dir);
     if !examples_dir.exists() {
         eprintln!("{} does not exist", examples_dir.display());
     }
