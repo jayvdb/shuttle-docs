@@ -1,0 +1,15 @@
+```toml Cargo.toml
+[package]
+name = "persist"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+rocket = { version = "0.5.0-rc.2", features = ["json"] }
+serde = { version = "1.0.148", features = ["derive"] }
+shuttle-persist = "0.17.0"
+shuttle-rocket = { version = "0.17.0" }
+shuttle-runtime = { version = "0.17.0" }
+tokio = { version = "1.26.0" }
+
+```
